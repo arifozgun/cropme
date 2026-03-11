@@ -2,6 +2,10 @@
 
 An Apple Photos-style image cropper for Flutter with spring physics, rotation trackbar, free-form resize handles, and rubber-band snap-back animations.
 
+![Flutter Cropme Example Demo](https://github.com/user-attachments/assets/2b7099fb-c8b7-4d49-a53c-25d3c8c2f3aa)
+<img src="https://github.com/user-attachments/assets/87a6233e-66c3-4c5d-a972-816c7d058961" height="668"/>
+
+
 ## Features
 
 - **Apple Photos-style UX** -- Spring physics animations for natural, satisfying crop interactions
