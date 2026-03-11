@@ -25,7 +25,7 @@ An Apple Photos-style image cropper for Flutter with spring physics, rotation tr
 
 ```yaml
 dependencies:
-  cropme: ^0.0.1
+  cropme: ^<latest_version>
 ```
 
 ## Usage
