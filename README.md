@@ -2,42 +2,40 @@
 
 An Apple Photos-style image cropper for Flutter with spring physics, rotation trackbar, free-form resize handles, and rubber-band snap-back animations.
 
-## ✨ Features
+## Features
 
-- **Apple Photos-style UX** — Spring physics animations for natural, satisfying crop interactions
-- **Free-form cropping** — Drag edges and corners to resize the crop area
-- **Rotation trackbar** — Precise rotation control with haptic feedback at key angles
-- **Two-finger rotation** — Pinch-rotate gesture with ±45° range
-- **Rubber-band snap-back** — Smooth bounce-back when pulling beyond boundaries
-- **Rotation-aware boundaries** — Crop rect always stays within rotated image bounds (no black corners)
-- **Save & restore** — `CropSettings` lets you restore previous crop state when re-editing
-- **HDR/HEIF support** — Automatically normalizes iOS HDR images via `flutter_image_compress`
-- **Customizable theming** — Full color, text, and label customization via `CropperThemeData`
-- **Platform-adaptive** — Blur overlay on iOS, solid overlay on Android for performance
+- **Apple Photos-style UX** -- Spring physics animations for natural, satisfying crop interactions
+- **Free-form cropping** -- Drag edges and corners to resize the crop area
+- **Rotation trackbar** -- Precise rotation control with haptic feedback at key angles
+- **Two-finger rotation** -- Pinch-rotate gesture with a range of 45 degrees
+- **Rubber-band snap-back** -- Smooth bounce-back when pulling beyond boundaries
+- **Rotation-aware boundaries** -- Crop rect always stays within rotated image bounds
+- **Save and restore** -- `CropSettings` lets you restore previous crop state when re-editing
+- **HDR/HEIF support** -- Automatically normalizes iOS HDR images via `flutter_image_compress`
+- **Customizable theming** -- Full color, text, and label customization via `CropperThemeData`
+- **Platform-adaptive overlay** -- Blur overlay on iOS/macOS, solid overlay on other platforms
 
-## 📦 Installation
+## Installation
 
 ```yaml
 dependencies:
   cropme: ^0.0.1
 ```
 
-## 🚀 Usage
+## Usage
 
 ### Basic
 
 ```dart
-import 'dart:io';
 import 'package:cropme/cropme.dart';
 
-// Show the image cropper and get the result
 final result = await ImageCropper.show(
   context: context,
-  imageFile: File('/path/to/image.jpg'),
+  imageBytes: imageBytes, // Uint8List
 );
 
 if (result != null) {
-  final croppedFile = result.file as File;
+  final croppedBytes = result.bytes; // Uint8List
   final settings = result.settings; // Save for re-editing later
 }
 ```
@@ -47,7 +45,7 @@ if (result != null) {
 ```dart
 final result = await ImageCropper.show(
   context: context,
-  imageFile: imageFile,
+  imageBytes: imageBytes,
   theme: CropperThemeData(
     backgroundColor: Colors.black,
     accentColor: Colors.amber,
@@ -61,13 +59,11 @@ final result = await ImageCropper.show(
 ### Restore Previous Crop
 
 ```dart
-// Save settings from previous crop
 final savedSettings = previousResult.settings;
 
-// Restore when re-editing
 final result = await ImageCropper.show(
   context: context,
-  imageFile: imageFile,
+  imageBytes: imageBytes,
   initialSettings: savedSettings,
 );
 ```
@@ -76,19 +72,19 @@ final result = await ImageCropper.show(
 
 ```dart
 ImageCropper(
-  imageFile: imageFile,
+  imageBytes: imageBytes,
   initialSettings: savedSettings,
   theme: CropperThemeData(accentColor: Colors.orange),
 )
 ```
 
-## ⚙️ API
+## API Reference
 
 ### ImageCropper
 
 | Property | Type | Default | Description |
 |---|---|---|---|
-| `imageFile` | `File` | Required | Source image file to crop |
+| `imageBytes` | `Uint8List` | required | Source image bytes to crop |
 | `initialSettings` | `CropSettings?` | `null` | Restore previous crop state |
 | `theme` | `CropperThemeData` | Default dark | Theme configuration |
 
@@ -96,19 +92,19 @@ ImageCropper(
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `context` | `BuildContext` | Required | Build context for navigation |
-| `imageFile` | `File` | Required | Source image file |
+| `context` | `BuildContext` | required | Build context for navigation |
+| `imageBytes` | `Uint8List` | required | Source image bytes |
 | `initialSettings` | `CropSettings?` | `null` | Restore previous crop state |
 | `theme` | `CropperThemeData` | Default dark | Theme configuration |
 
-**Returns:** `Future<CropResult?>` — `null` if user cancels
+Returns `Future<CropResult?>`. Returns `null` if the user cancels.
 
 ### CropResult
 
 | Property | Type | Description |
 |---|---|---|
-| `file` | `dynamic` | The cropped image `File` |
-| `settings` | `CropSettings` | Settings used (save for re-editing) |
+| `bytes` | `Uint8List` | The cropped image bytes |
+| `settings` | `CropSettings` | Settings used, save for re-editing |
 
 ### CropperThemeData
 
@@ -116,19 +112,44 @@ ImageCropper(
 |---|---|---|---|
 | `backgroundColor` | `Color` | `#000000` | Scaffold background |
 | `overlayColor` | `Color` | `#99000000` | Area outside crop rect |
-| `gridLineColor` | `Color` | `#33FFFFFF` | Rule-of-thirds grid |
-| `accentColor` | `Color` | `#FFC107` | Rotation indicator |
-| `buttonBackgroundColor` | `Color` | `#2C2C2E` | Glass button background |
+| `overlayBlurSigma` | `double` | `20.0` | Blur intensity for the overlay. Set to 0 to disable |
+| `blurEnabledPlatforms` | `Set<TargetPlatform>` | iOS, macOS | Platforms where blur is enabled |
+| `gridLineColor` | `Color` | `#33FFFFFF` | Rule-of-thirds grid lines |
+| `accentColor` | `Color` | `#FFC107` | Rotation indicator and highlights |
+| `buttonBackgroundColor` | `Color` | `#2C2C2E` | Button background |
 | `buttonTextColor` | `Color` | `#FFFFFF` | Button text |
+| `buttonTextStyle` | `TextStyle` | 14sp, w500, white | Button label style |
+| `appBarForegroundColor` | `Color` | `#FFFFFF` | App bar icon/text color |
+| `closeIcon` | `IconData` | `CupertinoIcons.xmark` | Close button icon |
+| `loadingIndicatorColor` | `Color` | `#FFFFFF` | Loading spinner color |
+| `progressIndicatorBackgroundColor` | `Color` | `#000000` | Progress indicator track |
+| `cropButtonColor` | `Color` | `#FFFFFF` | Crop button background |
+| `cropButtonTextColor` | `Color` | `#000000` | Crop button text |
 | `cropCornerRadius` | `double` | `12.0` | Crop rect corner radius |
 | `resetLabel` | `String` | `'Reset'` | Reset button text |
 | `cropLabel` | `String` | `'Crop & Save'` | Crop button text |
 
-## 📋 Requirements
+### CropSettings
 
-- Flutter 3.10+
-- Dart 3.0+
+Serializable model for saving and restoring crop state. Supports `toMap()` and `fromMap()` for persistence.
 
-## 📄 License
+| Property | Type | Description |
+|---|---|---|
+| `scale` | `double` | Zoom level (1.0 = original) |
+| `offsetX` | `double` | X offset of the transformation |
+| `offsetY` | `double` | Y offset of the transformation |
+| `rotation` | `double` | Rotation angle in radians |
+| `aspectRatio` | `double?` | Fixed aspect ratio, `null` for free-form |
+| `cropRectLeft` | `double` | Crop rect left position |
+| `cropRectTop` | `double` | Crop rect top position |
+| `cropRectWidth` | `double` | Crop rect width |
+| `cropRectHeight` | `double` | Crop rect height |
 
-MIT License — see [LICENSE](LICENSE) for details.
+## Requirements
+
+- Flutter 3.32+
+- Dart 3.8+
+
+## License
+
+MIT License -- see [LICENSE](LICENSE) for details.
