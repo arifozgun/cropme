@@ -1,6 +1,6 @@
 name: cropme
 description: An image cropper for Flutter with spring physics, rotation trackbar, free-form resize handles, and rubber-band snap-back animations.
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/arifozgun/cropme
 repository: https://github.com/arifozgun/cropme
 issue_tracker: https://github.com/arifozgun/cropme/issues
@@ -19,3 +19,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+
+screenshots:
+  - description: The flutter cropme package logo.
+    path: assets/logo.png

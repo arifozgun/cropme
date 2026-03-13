@@ -7,7 +7,6 @@ An Apple Photos-style image cropper for Flutter with spring physics, rotation tr
 
 
 
-
 ## Features
 
 - **Apple Photos-style UX** -- Spring physics animations for natural, satisfying crop interactions
